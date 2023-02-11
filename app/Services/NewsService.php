@@ -87,7 +87,7 @@ class NewsService
         }
     }
 
-    public function syncNewsApi()
+    private function syncNewsApi()
     {
         $NEWS_API = "news api";
         $API_KEY = "29b80fdb71ac4e1ba098a7c448d16767";
@@ -124,7 +124,7 @@ class NewsService
         }
     }
 
-    public function syncNYTimesApi()
+    private function syncNYTimesApi()
     {
         $NY_TIMES = "NY_TIMES";
         $API_KEY = "mw9GwjbIG2ztA0nuwAcAuakjtzduBRAH";

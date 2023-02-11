@@ -5,10 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class NewsCategory extends Model
+class NewsCategory extends MyModel
 {
-    use HasFactory;
-
     public function news()
     {
         return $this->hasMany(News::class);

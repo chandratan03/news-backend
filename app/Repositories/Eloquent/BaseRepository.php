@@ -142,4 +142,17 @@ class BaseRepository implements EloquentRepositoryInterface
     {
         return $this->findTrashedById($modelId)->forceDelete();
     }
+
+    public function findByWhere(array $wheres = []): Collection
+    {
+        $result = $this->model;
+        foreach ($wheres as $where) {
+            if (count($where) === 3) {
+                $result = $result->where($where[0], $where[1], $where[2]);
+            } else if (count($where) === 2) {
+                $result = $result->where($where[0], $where[1]);
+            }
+        }
+        return $result->get();
+    }
 }

@@ -95,4 +95,12 @@ interface EloquentRepositoryInterface
      * @return bool
      */
     public function permanentlyDeleteById(int $modelId): bool;
+
+    /**
+     * Get all by conditions
+     *
+     * @param array $wheres
+     * @return Collection
+     */
+    public function findByWhere(array $wheres=[]): Collection;
 }

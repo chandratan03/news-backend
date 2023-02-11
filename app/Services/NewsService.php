@@ -163,7 +163,33 @@ class NewsService
     }
 
 
-    public function paginate($pageSize){
+    public function paginate($pageSize)
+    {
         return $this->newsRepository->paginate($pageSize);
+    }
+
+    public function search($data)
+    {
+        $query = $data["query"];
+        $date = $data["date"];
+        $category = $data["category"];
+        $source = $data["source"];
+
+        $wheres = [];
+        if ($date) {
+            $wheres[]  = ["news_publication_date", $date];
+        }
+        if ($category) {
+            $wheres[]  = ["news_category_id", $category];
+        }
+        if ($source) {
+            $wheres[]  = ["news_source_data", $source];
+        }
+
+        if ($query) {
+            $wheres[] = ["news_title", "LIKE", "%$query%"];
+        }
+
+        return $this->newsRepository->findByWhere($wheres);
     }
 }

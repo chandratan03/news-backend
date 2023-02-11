@@ -35,5 +35,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => '/news'], function () {
         Route::get('/sync', [NewsSyncController::class, 'sync']);
         Route::get('/', [NewsController::class, 'index']);
+        Route::get('/search', [NewsController::class, 'search']);
     });
 });

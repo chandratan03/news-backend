@@ -27,15 +27,7 @@ class NewsSyncController extends Controller
 
     public function sync()
     {
-
-//         $this->syncGuardian();
-//         $this->syncNewsApi();
-//         $this->syncNYTimesApi();
-
-//         $syncDate = new NewsSyncDate();
-//         $syncDate->save();
         $res = $this->newsService->sync();
-
         return MyHelper::customResponse($res["data"], $res["message"]);
     }
 }

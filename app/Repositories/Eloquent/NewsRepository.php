@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\News;
 use App\Repositories\NewsRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class NewsRepository extends BaseRepository implements NewsRepositoryInterface
 {
@@ -21,6 +22,11 @@ class NewsRepository extends BaseRepository implements NewsRepositoryInterface
     public function __construct(News $model)
     {
         $this->model = $model;
+    }
+
+    public function paginate($pageSize): ?LengthAwarePaginator
+    {
+        return $this->model->paginate($pageSize);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\News;
 
+use App\Helper\MyHelper;
 use App\Http\Controllers\Controller;
 use App\Services\NewsService;
 use Illuminate\Http\Request;
@@ -16,8 +17,9 @@ class NewsController extends Controller
         $this->newsService = $newsService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-
+        $pageSize = $request["pageSize"] ?? 20;
+        return MyHelper::customResponse($this->newsService->paginate($pageSize));
     }
 }

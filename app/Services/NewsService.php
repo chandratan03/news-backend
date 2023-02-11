@@ -161,4 +161,9 @@ class NewsService
             }
         }
     }
+
+
+    public function paginate($pageSize){
+        return $this->newsRepository->paginate($pageSize);
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('contributors', function (Blueprint $table) {
             $table->bigIncrements("id");
-            $table->string("contributor_name");
+            $table->string("contributor_name")->unique();
             $table->timestamps();
         });
     }

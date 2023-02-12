@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('news_categories', function (Blueprint $table) {
-            $table->bigIncrements("id");
+            $table->id();
             $table->string("news_category_name");
             $table->timestamps();
         });

@@ -16,6 +16,7 @@ use App\Repositories\NewsCategoryRepositoryInterface;
 use App\Repositories\NewsContributorRepositoryInterface;
 use App\Repositories\NewsRepositoryInterface;
 use App\Repositories\NewsSyncDateRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RegisterServiceProvider extends ServiceProvider
@@ -34,7 +35,6 @@ class RegisterServiceProvider extends ServiceProvider
         $this->app->bind(NewsSyncDateRepositoryInterface::class, NewsSyncDateRepository::class);
         $this->app->bind(ContributorRepositoryInterface::class, ContributorRepository::class);
         $this->app->bind(NewsContributorRepositoryInterface::class, NewsContributorRepository::class);
-
     }
 
     /**

@@ -254,6 +254,22 @@ class NewsService
         $date = $data["date"];
         $category = $data["category"];
         $source = $data["source"];
+        $author = $data["author"];
+
+        $contributor = $this->contributorRepository->findById($author);
+        if(!empty($contributor)){
+            $newsContributors = $this->newsContributorRepository->findByWhere([
+                ["contributor_id", $contributor["id"]]
+            ]);
+            $newsCollection = [];
+            foreach ($newsContributors as $newsContributor) {
+                $news = $newsContributor->news;
+                $contributor = $newsContributor->contributor;
+                $news["author"] = $contributor["contributor_name"];
+                $newsCollection[] = $news;
+            }
+            return $newsCollection;
+        }
 
         $wheres = [];
         if ($date) {
@@ -269,6 +285,9 @@ class NewsService
         if ($query) {
             $wheres[] = ["news_title", "LIKE", "%$query%"];
         }
+
+
+
 
         return $this->newsRepository->findByWhere($wheres);
     }

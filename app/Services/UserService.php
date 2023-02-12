@@ -30,7 +30,7 @@ class UserService
 
     public function login($email, $password){
         $user = $this->userRepository->findByEmail($email);
-        if (!$user || !Hash::check($user->password, $password)) {
+        if (!$user || !Hash::check($password, $user->password)) {
             return null;
         }
 

@@ -35,6 +35,7 @@ class NewsRepository extends BaseRepository implements NewsRepositoryInterface
                 $result = $result->where($where[0], $where[1]);
             }
         }
+        $result = $result->orderBy("news_publication_date", "desc");
         return $result->paginate($pageSize);
     }
 }

@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
 class NewsContributor extends MyModel
 {
     public function news()
@@ -14,6 +11,6 @@ class NewsContributor extends MyModel
 
     public function contributor()
     {
-        return $this->belongsTo(Contributor::class);
+        return $this->belongsTo(Contributor::class, "contributor_id");
     }
 }

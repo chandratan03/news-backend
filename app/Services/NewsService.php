@@ -201,8 +201,8 @@ class NewsService
                     if ($persons && count($persons) > 0) {
                         foreach ($persons as $person) {
                             $name = "{$person["firstname"]}";
-                            $name = $name . ($person["middlename"] ? " {$person['middleName']} " : "");
-                            $name = $name . ($person["lastname"] ? " {$person['lastname']} " : "");
+                            $name = $name . (array_key_exists("middlename", $person) && !empty($person["middlename"]) ? " {$person['middleName']} " : "");
+                            $name = $name . (array_key_exists("lastname", $person) && !empty($person["lastname"]) ? " {$person['lastname']} " : "");
 
                             $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $name]]);
 
@@ -245,7 +245,13 @@ class NewsService
 
     public function paginate($pageSize)
     {
-        return $this->newsRepository->paginate($pageSize);
+        $result = $this->newsRepository->paginate($pageSize);
+        foreach($result as $news){
+            foreach($news->newsContributors as $newsContributor){
+                $newsContributor->contributor;
+            }
+        }
+        return $result;
     }
 
     public function search($data)

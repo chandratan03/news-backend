@@ -7,8 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class News extends MyModel
 {
-    public function NewsCategory()
+    public function newsCategory()
     {
         return $this->hasOne(NewsCategory::class);
+    }
+
+    public function newsContributors()
+    {
+        return $this->hasMany(NewsContributor::class);
     }
 }

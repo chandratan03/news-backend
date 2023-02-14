@@ -9,7 +9,7 @@ class News extends MyModel
 {
     public function newsCategory()
     {
-        return $this->hasOne(NewsCategory::class);
+        return $this->belongsTo(NewsCategory::class);
     }
 
     public function newsContributors()

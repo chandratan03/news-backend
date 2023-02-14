@@ -251,6 +251,7 @@ class NewsService
             foreach ($news->newsContributors as $newsContributor) {
                 $newsContributor->contributor;
             }
+            $news->newsCategory;
         }
         return $result;
     }

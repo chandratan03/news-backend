@@ -19,11 +19,6 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         $pageSize = $request["pageSize"] ?? 20;
-        return MyHelper::customResponse($this->newsService->paginate($pageSize));
-    }
-
-    public function search(Request $request)
-    {
-        return MyHelper::customResponse($this->newsService->search($request));
+        return MyHelper::customResponse($this->newsService->paginate($pageSize, $request));
     }
 }

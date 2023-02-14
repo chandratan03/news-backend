@@ -243,18 +243,19 @@ class NewsService
     }
 
 
-    public function paginate($pageSize)
+    public function paginate($pageSize, $params)
     {
-        $result = $this->newsRepository->paginate($pageSize);
-        foreach($result as $news){
-            foreach($news->newsContributors as $newsContributor){
+        $params = $this->searchParams($params);
+        $result = $this->newsRepository->paginationWithWhere($params, $pageSize);
+        foreach ($result as $news) {
+            foreach ($news->newsContributors as $newsContributor) {
                 $newsContributor->contributor;
             }
         }
         return $result;
     }
 
-    public function search($data)
+    private function searchParams($data)
     {
         $query = $data["query"];
         $date = $data["date"];
@@ -262,39 +263,40 @@ class NewsService
         $source = $data["source"];
         $author = $data["author"];
 
-        $contributor = $this->contributorRepository->findById($author);
-        if(!empty($contributor)){
-            $newsContributors = $this->newsContributorRepository->findByWhere([
-                ["contributor_id", $contributor["id"]]
-            ]);
-            $newsCollection = [];
-            foreach ($newsContributors as $newsContributor) {
-                $news = $newsContributor->news;
-                $contributor = $newsContributor->contributor;
-                $news["author"] = $contributor["contributor_name"];
-                $newsCollection[] = $news;
-            }
-            return $newsCollection;
+        $params = [];
+
+        if ($author) {
+            // $contributor = $this->contributorRepository->findById($author);
+            // if (!empty($contributor)) {
+            //     $newsContributors = $this->newsContributorRepository->findByWhere([
+            //         ["contributor_id", $contributor["id"]]
+            //     ]);
+            //     $newsCollection = [];
+            //     foreach ($newsContributors as $newsContributor) {
+            //         $news = $newsContributor->news;
+            //         $contributor = $newsContributor->contributor;
+            //         $news["author"] = $contributor["contributor_name"];
+            //         $newsCollection[] = $news;
+            //     }
+            //     return $newsCollection;
+            // }
         }
 
-        $wheres = [];
+
         if ($date) {
-            $wheres[]  = ["news_publication_date", $date];
+            $params[]  = ["news_publication_date", $date];
         }
         if ($category) {
-            $wheres[]  = ["news_category_id", $category];
+            $params[]  = ["news_category_id", $category];
         }
         if ($source) {
-            $wheres[]  = ["news_source_data", $source];
+            $params[]  = ["news_source_data", $source];
         }
 
         if ($query) {
-            $wheres[] = ["news_title", "LIKE", "%$query%"];
+            $params[] = ["news_title", "LIKE", "%$query%"];
         }
 
-
-
-
-        return $this->newsRepository->findByWhere($wheres);
+        return $params;
     }
 }

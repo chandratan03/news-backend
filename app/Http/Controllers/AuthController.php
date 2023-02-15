@@ -6,9 +6,11 @@ use App\Constants\HttpResponse;
 use App\Helper\MyHelper;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UpdateRequest;
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -24,7 +26,8 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $res = $this->userService->create([
-            "name" => $request["name"],
+            "first_name" => $request["first_name"],
+            "last_name" => $request["last_name"],
             "email" => $request["email"],
             "password" => bcrypt($request["password"]),
         ]);
@@ -62,4 +65,17 @@ class AuthController extends Controller
         $message = "successfully logout";
         return MyHelper::customResponse([], $message);
     }
+
+    public function update(UpdateRequest $request)
+    {
+        $data["first_name"] = $request["first_name"];
+        $data["last_name"] = $request["last_name"];
+        $data["password"] = $request["password"];
+        $data["confirmPassword"] = $request["confirm_password"];
+        $data["image"] = $request->file('image');
+
+        $result = $this->userService->update($data);
+        return MyHelper::customResponse($result);
+    }
+
 }

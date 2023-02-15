@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\News\NewsCategoryController;
 use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\News\NewsSyncController;
+use App\Models\NewsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +25,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
             return $request->user();
         });
         Route::post('auth/logout', [AuthController::class, 'logout']);
+        Route::post('auth/update', [AuthController::class, 'update']);
     });
 });
 
@@ -36,5 +39,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/sync', [NewsSyncController::class, 'sync']);
         Route::get('/', [NewsController::class, 'index']);
         Route::get('/search', [NewsController::class, 'search']);
+        Route::get("/category", [NewsCategoryController::class, 'index']);
     });
 });

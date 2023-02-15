@@ -5,6 +5,7 @@ use App\Http\Controllers\Contributor\ContributorController;
 use App\Http\Controllers\News\NewsCategoryController;
 use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\News\NewsSyncController;
+use App\Http\Controllers\Source\SourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,4 +47,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get("/random", [ContributorController::class, "getRandomAuthor"]);
         Route::get("/{id}", [ContributorController::class, "findById"]);
     });
+
+    Route::get("/source", [SourceController::class, "index"]);
 });

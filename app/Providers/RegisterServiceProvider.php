@@ -21,6 +21,8 @@ use App\Repositories\SourceRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use App\Services\ContributorService;
 use App\Services\Interfaces\IContributorService;
+use App\Services\Interfaces\ISourceService;
+use App\Services\SourceService;
 use Illuminate\Support\ServiceProvider;
 
 class RegisterServiceProvider extends ServiceProvider
@@ -42,6 +44,7 @@ class RegisterServiceProvider extends ServiceProvider
         $this->app->bind(SourceRepositoryInterface::class, SourceRepository::class);
 
         $this->app->bind(IContributorService::class, ContributorService::class);
+        $this->app->bind(ISourceService::class, SourceService::class);
     }
 
     /**

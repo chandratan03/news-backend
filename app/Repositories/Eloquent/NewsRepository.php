@@ -4,7 +4,6 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\News;
 use App\Repositories\NewsRepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -35,6 +34,8 @@ class NewsRepository extends BaseRepository implements NewsRepositoryInterface
                 $result = $result->where($where[0], $where[1]);
             }
         }
+
+
         $result = $result->orderBy("news_publication_date", "desc");
         return $result->paginate($pageSize);
     }

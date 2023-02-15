@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Contributor\ContributorController;
 use App\Http\Controllers\News\NewsCategoryController;
 use App\Http\Controllers\News\NewsController;
 use App\Http\Controllers\News\NewsSyncController;
-use App\Models\NewsCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,5 +40,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/', [NewsController::class, 'index']);
         Route::get('/search', [NewsController::class, 'search']);
         Route::get("/category", [NewsCategoryController::class, 'index']);
+    });
+
+    Route::group(["prefix" => "/contributor"], function () {
+        Route::get("/random", [ContributorController::class, "getRandomAuthor"]);
+        Route::get("/{id}", [ContributorController::class, "findById"]);
     });
 });

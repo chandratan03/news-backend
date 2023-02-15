@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Helper\MyHelper;
-use App\Models\News;
-use App\Models\NewsCategory;
+
 use App\Repositories\ContributorRepositoryInterface;
 use App\Repositories\NewsCategoryRepositoryInterface;
 use App\Repositories\NewsContributorRepositoryInterface;
@@ -12,7 +10,6 @@ use App\Repositories\NewsRepositoryInterface;
 use App\Repositories\NewsSyncDateRepositoryInterface;
 use Carbon\Carbon;
 use DateTime;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class NewsService
@@ -243,17 +240,35 @@ class NewsService
     }
 
 
-    public function paginate($pageSize, $params)
+    public function paginate($pageSize, $data)
     {
-        $params = $this->searchParams($params);
-        $result = $this->newsRepository->paginationWithWhere($params, $pageSize);
+        $params = $this->searchParams($data);
+        $params = $this->filterByAuthor($params, $data["author"]);
+
+        $result = $this->newsRepository->paginationWithWhere($params, $data["author"], $pageSize);
         foreach ($result as $news) {
             foreach ($news->newsContributors as $newsContributor) {
                 $newsContributor->contributor;
             }
             $news->newsCategory;
         }
+
         return $result;
+    }
+
+    private function filterByAuthor($params, $author)
+    {
+        if ($author) {
+            $newsContributors = $this->newsContributorRepository->findByWhere([
+                ["contributor_id", $author]
+            ]);
+            $newsIds = [];
+            foreach ($newsContributors as $newsContributor) {
+                $newsIds[] = $newsContributor["news_id"];
+            }
+            $params[] = ["id", $newsIds];
+        }
+        return $params;
     }
 
     private function searchParams($data)
@@ -262,27 +277,8 @@ class NewsService
         $date = $data["date"];
         $category = $data["category"];
         $source = $data["source"];
-        $author = $data["author"];
 
         $params = [];
-
-        if ($author) {
-            // $contributor = $this->contributorRepository->findById($author);
-            // if (!empty($contributor)) {
-            //     $newsContributors = $this->newsContributorRepository->findByWhere([
-            //         ["contributor_id", $contributor["id"]]
-            //     ]);
-            //     $newsCollection = [];
-            //     foreach ($newsContributors as $newsContributor) {
-            //         $news = $newsContributor->news;
-            //         $contributor = $newsContributor->contributor;
-            //         $news["author"] = $contributor["contributor_name"];
-            //         $newsCollection[] = $news;
-            //     }
-            //     return $newsCollection;
-            // }
-        }
-
 
         if ($date) {
             $params[]  = ["news_publication_date", $date];

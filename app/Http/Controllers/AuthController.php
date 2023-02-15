@@ -70,12 +70,11 @@ class AuthController extends Controller
     {
         $data["first_name"] = $request["first_name"];
         $data["last_name"] = $request["last_name"];
-        $data["password"] = $request["password"];
+        $data["password"] = empty($request["password"]) ? null : bcrypt($request["password"]);
         $data["confirmPassword"] = $request["confirm_password"];
         $data["image"] = $request->file('image');
 
         $result = $this->userService->update($data);
         return MyHelper::customResponse($result);
     }
-
 }

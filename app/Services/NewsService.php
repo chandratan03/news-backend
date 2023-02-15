@@ -8,6 +8,7 @@ use App\Repositories\NewsCategoryRepositoryInterface;
 use App\Repositories\NewsContributorRepositoryInterface;
 use App\Repositories\NewsRepositoryInterface;
 use App\Repositories\NewsSyncDateRepositoryInterface;
+use App\Repositories\SourceRepositoryInterface;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Http;
@@ -19,6 +20,7 @@ class NewsService
     private $newsSyncDateRepository;
     private $contributorRepository;
     private $newsContributorRepository;
+    private $sourceRepository;
 
     public function __construct(
         NewsRepositoryInterface $newsRepository,
@@ -26,12 +28,14 @@ class NewsService
         NewsSyncDateRepositoryInterface $newsSyncDateRepository,
         ContributorRepositoryInterface $contributorRepository,
         NewsContributorRepositoryInterface $newsContributorRepository,
+        SourceRepositoryInterface $sourceRepository,
     ) {
         $this->newsRepository = $newsRepository;
         $this->newsCategoryRepository = $newsCategoryRepository;
         $this->newsSyncDateRepository = $newsSyncDateRepository;
         $this->contributorRepository = $contributorRepository;
         $this->newsContributorRepository = $newsContributorRepository;
+        $this->sourceRepository = $sourceRepository;
     }
 
     public function sync()
@@ -56,7 +60,7 @@ class NewsService
 
     private function syncGuardian()
     {
-        $GUARDIAN = "guardian";
+        $sourceId = $this->sourceRepository->findByWhere([["source_name", "Guardian"]])->first()["id"];
         $guardianUrl = "https://content.guardianapis.com/search";
         $API_KEY = "bbe4fe68-5878-4964-b3d0-b79809715208";
         $showTags = "contributor";
@@ -99,7 +103,7 @@ class NewsService
                         "news_category_id" =>  $section["id"],
                         "news_publication_date" => new DateTime($value["webPublicationDate"]),
                         "news_web_url" =>  $value["webUrl"],
-                        "news_source_data" =>  $GUARDIAN,
+                        "news_source_id" =>  $sourceId,
                         "news_image_url" =>  $value["fields"]["thumbnail"],
                     ]);
                     foreach ($contributors as $contributor) {
@@ -115,7 +119,7 @@ class NewsService
 
     private function syncNewsApi()
     {
-        $NEWS_API = "news api";
+        $sourceId = $this->sourceRepository->findByWhere([["source_name", "News API"]])->first()["id"];
         $API_KEY = "29b80fdb71ac4e1ba098a7c448d16767";
         $country = "us";
         $categories = $this->newsCategoryRepository->all();
@@ -142,7 +146,7 @@ class NewsService
                         "news_category_id" => $category["id"],
                         "news_publication_date" => new DateTime($value["publishedAt"]),
                         "news_web_url" => $value["url"],
-                        "news_source_data" => $NEWS_API,
+                        "news_source_id" => $sourceId,
                         "news_image_url" => $value["urlToImage"],
                     ]);
                     $contributor = null;
@@ -170,7 +174,7 @@ class NewsService
 
     private function syncNYTimesApi()
     {
-        $NY_TIMES = "NY_TIMES";
+        $sourceId = $this->sourceRepository->findByWhere([["source_name", "NY Times"]])->first()["id"];
         $API_KEY = "mw9GwjbIG2ztA0nuwAcAuakjtzduBRAH";
         $sections = $this->newsCategoryRepository->all();
         $image_url_ny_times = "https://static01.nyt.com/";
@@ -231,7 +235,7 @@ class NewsService
                         "news_category_id" => $section["id"],
                         "news_publication_date" => new DateTime($value["pub_date"]),
                         "news_web_url" => $value["web_url"],
-                        "news_source_data" => $NY_TIMES,
+                        "news_source_id" => $sourceId,
                         "news_image_url" =>  $image_url_ny_times . $multimedia[0]["url"],
                     ]);
                 }

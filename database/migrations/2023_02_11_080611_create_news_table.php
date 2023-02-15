@@ -19,10 +19,12 @@ return new class extends Migration
             $table->unsignedBigInteger("news_category_id");
             $table->date("news_publication_date");
             $table->text("news_web_url");
-            $table->string("news_source_data");
+            $table->unsignedBigInteger("news_source_id");
             $table->text("news_image_url");
             $table->foreign("news_category_id")->references("id")->on("news_categories");
             $table->timestamps();
+            $table->foreign("news_source_id")->references("id")->on("sources");
+
         });
     }
 

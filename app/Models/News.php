@@ -16,4 +16,9 @@ class News extends MyModel
     {
         return $this->hasMany(NewsContributor::class);
     }
+
+    public function source()
+    {
+        return $this->belongsTo(Source::class);
+    }
 }

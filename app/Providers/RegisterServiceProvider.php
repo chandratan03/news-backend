@@ -10,12 +10,14 @@ use App\Repositories\Eloquent\NewsCategoryRepository;
 use App\Repositories\Eloquent\NewsContributorRepository;
 use App\Repositories\Eloquent\NewsRepository;
 use App\Repositories\Eloquent\NewsSyncDateRepository;
+use App\Repositories\Eloquent\SourceRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\EloquentRepositoryInterface;
 use App\Repositories\NewsCategoryRepositoryInterface;
 use App\Repositories\NewsContributorRepositoryInterface;
 use App\Repositories\NewsRepositoryInterface;
 use App\Repositories\NewsSyncDateRepositoryInterface;
+use App\Repositories\SourceRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use App\Services\ContributorService;
 use App\Services\Interfaces\IContributorService;
@@ -37,6 +39,7 @@ class RegisterServiceProvider extends ServiceProvider
         $this->app->bind(NewsSyncDateRepositoryInterface::class, NewsSyncDateRepository::class);
         $this->app->bind(ContributorRepositoryInterface::class, ContributorRepository::class);
         $this->app->bind(NewsContributorRepositoryInterface::class, NewsContributorRepository::class);
+        $this->app->bind(SourceRepositoryInterface::class, SourceRepository::class);
 
         $this->app->bind(IContributorService::class, ContributorService::class);
     }

@@ -63,7 +63,9 @@ class NewsService implements INewsService
     {
         $sourceId = $this->sourceRepository->findByWhere([["source_name", "Guardian"]])->first()["id"];
         $guardianUrl = "https://content.guardianapis.com/search";
-        $API_KEY = "bbe4fe68-5878-4964-b3d0-b79809715208";
+        $API_KEY = env("GUARDIAN_API_KEY");
+        if(!$API_KEY) return;
+
         $showTags = "contributor";
         $showFields = "thumbnail";
         $sections = $this->newsCategoryRepository->all();
@@ -121,7 +123,9 @@ class NewsService implements INewsService
     private function syncNewsApi()
     {
         $sourceId = $this->sourceRepository->findByWhere([["source_name", "News API"]])->first()["id"];
-        $API_KEY = "29b80fdb71ac4e1ba098a7c448d16767";
+        $API_KEY = env("NEWS_API_API_KEY");
+        if(!$API_KEY) return;
+
         $country = "us";
         $categories = $this->newsCategoryRepository->all();
         $pageSize = 50;
@@ -176,7 +180,9 @@ class NewsService implements INewsService
     private function syncNYTimesApi()
     {
         $sourceId = $this->sourceRepository->findByWhere([["source_name", "NY Times"]])->first()["id"];
-        $API_KEY = "mw9GwjbIG2ztA0nuwAcAuakjtzduBRAH";
+        $API_KEY = env("NY_TIMES_API_KEY");
+        if(!$API_KEY) return;
+
         $sections = $this->newsCategoryRepository->all();
         $image_url_ny_times = "https://static01.nyt.com/";
         $nyTimesApiUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";

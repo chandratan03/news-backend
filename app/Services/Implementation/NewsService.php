@@ -64,7 +64,7 @@ class NewsService implements INewsService
         $sourceId = $this->sourceRepository->findByWhere([["source_name", "Guardian"]])->first()["id"];
         $guardianUrl = "https://content.guardianapis.com/search";
         $API_KEY = env("GUARDIAN_API_KEY");
-        if(!$API_KEY) return;
+        if (!$API_KEY) return;
 
         $showTags = "contributor";
         $showFields = "thumbnail";
@@ -87,20 +87,7 @@ class NewsService implements INewsService
                 $data = $response["response"]["results"];
                 foreach ($data as $value) {
                     $tags = $value["tags"];
-                    $contributors = [];
-
-                    foreach ($tags as $tag) {
-                        $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $tag["webTitle"]]]);
-
-                        if (count($contributorCollection) > 0) {
-                            $contributors[] = $contributorCollection->first();
-                        } else {
-                            $contributors[] = $this->contributorRepository->create([
-                                "contributor_name" =>  $tag["webTitle"],
-                            ]);
-                        }
-                    }
-
+                    $contributors = $this->getGuardianContributors($tags);
                     $news = $this->newsRepository->create([
                         "news_title" => $value["webTitle"],
                         "news_category_id" =>  $section["id"],
@@ -120,15 +107,35 @@ class NewsService implements INewsService
         }
     }
 
+    private function getGuardianContributors($tags)
+    {
+        $contributors = [];
+        foreach ($tags as $tag) {
+            $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $tag["webTitle"]]]);
+
+            if (count($contributorCollection) > 0) {
+                $contributors[] = $contributorCollection->first();
+            } else {
+                $contributors[] = $this->contributorRepository->create([
+                    "contributor_name" =>  $tag["webTitle"],
+                ]);
+            }
+        }
+
+        return $contributors;
+    }
+
     private function syncNewsApi()
     {
         $sourceId = $this->sourceRepository->findByWhere([["source_name", "News API"]])->first()["id"];
         $API_KEY = env("NEWS_API_API_KEY");
-        if(!$API_KEY) return;
+        if (!$API_KEY) return;
 
+        $newsApiUrl = "https://newsapi.org/v2/top-headlines";
         $country = "us";
-        $categories = $this->newsCategoryRepository->all();
         $pageSize = 50;
+        $categories = $this->newsCategoryRepository->all();
+
 
         foreach ($categories as $category) {
             $newsApiParams = [
@@ -138,7 +145,6 @@ class NewsService implements INewsService
                 "category" => $category["news_category_name"],
             ];
 
-            $newsApiUrl = "https://newsapi.org/v2/top-headlines";
             $response = Http::get($newsApiUrl, $newsApiParams);
 
             if ($response->successful()) {
@@ -154,19 +160,9 @@ class NewsService implements INewsService
                         "news_source_id" => $sourceId,
                         "news_image_url" => $value["urlToImage"],
                     ]);
-                    $contributor = null;
-                    $value["author"] = !empty($value["author"])  ? $value["author"] : "unknown";
-                    $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $value["author"]]]);
 
-                    if (count($contributorCollection) > 0) {
-                        $contributor = $contributorCollection->first();
-                    } else {
-                        $contributor = $this->contributorRepository->create([
-                            "contributor_name" =>  $value["author"],
-                        ]);
-                    }
-
-
+                    $value["author"] = $this->newsApiGetAuthor($value["author"]);
+                    $contributor = $this->getContributorNewsApi($value["author"]);
 
                     $this->newsContributorRepository->create([
                         "contributor_id" => $contributor["id"],
@@ -177,11 +173,32 @@ class NewsService implements INewsService
         }
     }
 
+    private function newsApiGetAuthor($author)
+    {
+        $unknownAuthor = "unknown";
+        return !empty($author)  ? $author : $unknownAuthor;
+    }
+
+    private function getContributorNewsApi($author)
+    {
+        $contributor = null;
+        $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $author]]);
+        if (count($contributorCollection) > 0) {
+            $contributor = $contributorCollection->first();
+        } else {
+            $contributor = $this->contributorRepository->create([
+                "contributor_name" =>  $author,
+            ]);
+        }
+        return $contributor;
+    }
+
+
     private function syncNYTimesApi()
     {
         $sourceId = $this->sourceRepository->findByWhere([["source_name", "NY Times"]])->first()["id"];
         $API_KEY = env("NY_TIMES_API_KEY");
-        if(!$API_KEY) return;
+        if (!$API_KEY) return;
 
         $sections = $this->newsCategoryRepository->all();
         $image_url_ny_times = "https://static01.nyt.com/";
@@ -199,45 +216,13 @@ class NewsService implements INewsService
             if ($response->successful()) {
                 $data = $response["response"]["docs"];
                 foreach ($data as $value) {
-                    $multimedia = array_filter($value["multimedia"], function ($media) {
-                        return $media["type"] == "image";
-                    });
+                    $multimedia = $this->filterMultimediaNyTimes($value["multimedia"]);
                     if (count($multimedia) === 0) continue;
 
                     $persons = $value["byline"]["person"];
-                    $contributors = [];
-                    if ($persons && count($persons) > 0) {
-                        foreach ($persons as $person) {
-                            $name = "{$person["firstname"]}";
-                            $name = $name . (array_key_exists("middlename", $person) && !empty($person["middlename"]) ? " {$person['middleName']} " : "");
-                            $name = $name . (array_key_exists("lastname", $person) && !empty($person["lastname"]) ? " {$person['lastname']} " : "");
-
-                            $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $name]]);
-
-                            if (count($contributorCollection) > 0) {
-                                $contributors[] = $contributorCollection->first();
-                            } else {
-                                $contributors[] = $this->contributorRepository->create([
-                                    "contributor_name" =>  $name,
-                                ]);
-                            }
-                        }
-                    }
-                    if ($value["byline"]["organization"]) {
-                        $contributor = $value["byline"]["organization"];
-                        $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $contributor]]);
-
-                        if (count($contributorCollection) > 0) {
-                            $contributors[] = $contributorCollection->first();
-                        } else {
-                            $contributors[] = $this->contributorRepository->create([
-                                "contributor_name" =>  $contributor,
-                            ]);
-                        }
-                    }
-
-
-                    $this->newsRepository->create([
+                    $byLineOrganization = $value["byline"]["organization"];
+                    $contributors = $this->getContributors($persons, $byLineOrganization);
+                    $news = $this->newsRepository->create([
                         "news_title" => $value["headline"]["main"],
                         "news_category_id" => $section["id"],
                         "news_publication_date" => new DateTime($value["pub_date"]),
@@ -245,10 +230,62 @@ class NewsService implements INewsService
                         "news_source_id" => $sourceId,
                         "news_image_url" =>  $image_url_ny_times . $multimedia[0]["url"],
                     ]);
+
+                    foreach ($contributors as $contributor) {
+                        $this->newsContributorRepository->create([
+                            "contributor_id" => $contributor["id"],
+                            "news_id" => $news["id"],
+                        ]);
+                    }
                 }
             }
         }
     }
+
+    private function filterMultimediaNyTimes($multimedia)
+    {
+        return array_filter($multimedia, function ($media) {
+            return $media["type"] == "image";
+        });
+    }
+
+    private function getContributors($persons, $byLineOrganization)
+    {
+        $contributors = [];
+        if ($persons && count($persons) > 0) {
+            foreach ($persons as $person) {
+                $name = "{$person["firstname"]}";
+                $name = $name . (array_key_exists("middlename", $person) && !empty($person["middlename"]) ? " {$person['middleName']} " : "");
+                $name = $name . (array_key_exists("lastname", $person) && !empty($person["lastname"]) ? " {$person['lastname']} " : "");
+
+                $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $name]]);
+
+                if (count($contributorCollection) > 0) {
+                    $contributors[] = $contributorCollection->first();
+                } else {
+                    $contributors[] = $this->contributorRepository->create([
+                        "contributor_name" =>  $name,
+                    ]);
+                }
+            }
+        }
+
+        if ($byLineOrganization) {
+            $contributor = $byLineOrganization;
+            $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $contributor]]);
+
+            if (count($contributorCollection) > 0) {
+                $contributors[] = $contributorCollection->first();
+            } else {
+                $contributors[] = $this->contributorRepository->create([
+                    "contributor_name" =>  $contributor,
+                ]);
+            }
+        }
+
+        return $contributors;
+    }
+
 
 
     public function paginate($pageSize, $data)

@@ -255,8 +255,12 @@ class NewsService implements INewsService
         if ($persons && count($persons) > 0) {
             foreach ($persons as $person) {
                 $name = "{$person["firstname"]}";
-                $name = $name . (array_key_exists("middlename", $person) && !empty($person["middlename"]) ? " {$person['middleName']} " : "");
-                $name = $name . (array_key_exists("lastname", $person) && !empty($person["lastname"]) ? " {$person['lastname']} " : "");
+                if (array_key_exists("middlename", $person) && !empty($person["middlename"])) {
+                    $name = $name . " {$person['middlename']} ";
+                }
+                if (array_key_exists("lastname", $person) && !empty($person["lastname"])) {
+                    $name = $name .   " {$person['lastname']} ";
+                }
 
                 $contributorCollection = $this->contributorRepository->findByWhere([["contributor_name", $name]]);
 

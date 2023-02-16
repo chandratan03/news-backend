@@ -18,6 +18,4 @@
     - password: admin123
 7. Retrieve the token (bearer token) in the session storage
 8. run this command in order to sync the data (REPLACE YOUR TOKEN in `{TOKEN}` includes the curlybrackt must be removed)
-    - `curl --location --request GET 'localhost:8080/api/v1/news/sync' \
---header 'Accept: application/json' \
---header 'Authorization: Bearer {TOKEN}'`
+    - `curl --location --request GET 'localhost:8080/api/v1/news/sync' --header 'Accept: application/json' --header 'Authorization: Bearer {TOKEN}'`

@@ -1,6 +1,7 @@
 
 ### Make Sure you install the docker in your machine. You can check the documentation how to install the docker from official website https://docs.docker.com/
 ### And also make sure the docker is running in your machine.
+### If you are in windows, make sure to run the project using `WSL`. 
 
 1. git clone https://github.com/chandratan03/news-backend.git
 2. open up terminal and go to the project

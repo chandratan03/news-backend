@@ -19,6 +19,6 @@ class News extends MyModel
 
     public function source()
     {
-        return $this->belongsTo(Source::class);
+        return $this->belongsTo(Source::class, "news_source_id");
     }
 }

@@ -254,6 +254,7 @@ class NewsService
             foreach ($news->newsContributors as $newsContributor) {
                 $newsContributor->contributor;
             }
+            $news->source;
             $news->newsCategory;
         }
 
@@ -291,7 +292,7 @@ class NewsService
             $params[]  = ["news_category_id", $category];
         }
         if ($source) {
-            $params[]  = ["news_source_data", $source];
+            $params[]  = ["news_source_id", $source];
         }
 
         if ($query) {

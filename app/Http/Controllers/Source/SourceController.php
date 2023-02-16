@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Source;
 
 use App\Helper\MyHelper;
 use App\Http\Controllers\Controller;
-use App\Services\Interfaces\ISourceService;
+use App\Services\ISourceService;
 use Illuminate\Http\Request;
 
 class SourceController extends Controller

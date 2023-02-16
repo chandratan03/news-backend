@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Implementation;
 
 use App\Repositories\SourceRepositoryInterface;
-use App\Services\Interfaces\ISourceService;
+use App\Services\ISourceService;
 
 class SourceService implements ISourceService
 {

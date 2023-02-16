@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Implementation;
 
 use App\Repositories\ContributorRepositoryInterface;
-use App\Services\Interfaces\IContributorService;
+use App\Services\IContributorService;
 use Illuminate\Http\Request;
 
 class ContributorService implements IContributorService

@@ -4,14 +4,14 @@ namespace App\Http\Controllers\News;
 
 use App\Helper\MyHelper;
 use App\Http\Controllers\Controller;
-use App\Services\NewsService;
+use App\Services\INewsService;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
     private $newsService;
 
-    public function __construct(NewsService $newsService)
+    public function __construct(INewsService $newsService)
     {
         $this->newsService = $newsService;
     }

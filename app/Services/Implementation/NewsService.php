@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Implementation;
 
 
 use App\Repositories\ContributorRepositoryInterface;
@@ -9,11 +9,12 @@ use App\Repositories\NewsContributorRepositoryInterface;
 use App\Repositories\NewsRepositoryInterface;
 use App\Repositories\NewsSyncDateRepositoryInterface;
 use App\Repositories\SourceRepositoryInterface;
+use App\Services\INewsService;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Http;
 
-class NewsService
+class NewsService implements INewsService
 {
     private $newsRepository;
     private $newsCategoryRepository;

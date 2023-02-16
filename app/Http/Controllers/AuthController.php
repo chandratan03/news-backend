@@ -7,17 +7,13 @@ use App\Helper\MyHelper;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateRequest;
-use App\Models\User;
-use App\Repositories\UserRepositoryInterface;
-use App\Services\UserService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Services\IUserService;
 
 class AuthController extends Controller
 {
     private $userService;
 
-    public function __construct(UserService $userService)
+    public function __construct(IUserService $userService)
     {
         $this->userService = $userService;
     }

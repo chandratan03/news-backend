@@ -2,24 +2,16 @@
 
 namespace App\Http\Controllers\News;
 
-use App\Constants\HttpResponse;
 use App\Helper\MyHelper;
 use App\Http\Controllers\Controller;
-use App\Models\News;
-use App\Models\NewsCategory;
-use App\Models\NewsSyncDate;
-use App\Services\NewsService;
-use Carbon\Carbon;
-use DateTime;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Services\INewsService;
 
 class NewsSyncController extends Controller
 {
 
     private $newsService;
 
-    public function __construct(NewsService $newsService)
+    public function __construct(INewsService $newsService)
     {
         $this->newsService = $newsService;
     }

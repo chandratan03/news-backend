@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Contributor;
 
 use App\Helper\MyHelper;
 use App\Http\Controllers\Controller;
-use App\Services\Interfaces\IContributorService;
+use App\Services\IContributorService;
 use Illuminate\Http\Request;
 
 class ContributorController extends Controller

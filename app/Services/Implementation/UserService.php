@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Implementation;
 
 use App\Repositories\UserRepositoryInterface;
+use App\Services\IUserService;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class UserService
+class UserService implements IUserService
 {
 
     private $userRepository;

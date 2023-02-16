@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\NewsCategory;
 use App\Models\NewsSyncDate;
 use App\Repositories\ContributorRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
@@ -19,10 +20,16 @@ use App\Repositories\NewsRepositoryInterface;
 use App\Repositories\NewsSyncDateRepositoryInterface;
 use App\Repositories\SourceRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
-use App\Services\ContributorService;
-use App\Services\Interfaces\IContributorService;
-use App\Services\Interfaces\ISourceService;
-use App\Services\SourceService;
+use App\Services\IContributorService;
+use App\Services\Implementation\ContributorService;
+use App\Services\Implementation\NewsCategoryService;
+use App\Services\Implementation\NewsService;
+use App\Services\Implementation\SourceService;
+use App\Services\Implementation\UserService;
+use App\Services\INewsCategoryService;
+use App\Services\INewsService;
+use App\Services\ISourceService;
+use App\Services\IUserService;
 use Illuminate\Support\ServiceProvider;
 
 class RegisterServiceProvider extends ServiceProvider
@@ -45,6 +52,9 @@ class RegisterServiceProvider extends ServiceProvider
 
         $this->app->bind(IContributorService::class, ContributorService::class);
         $this->app->bind(ISourceService::class, SourceService::class);
+        $this->app->bind(INewsService::class, NewsService::class);
+        $this->app->bind(IUserService::class, UserService::class);
+        $this->app->bind(INewsCategoryService::class, NewsCategoryService::class);
     }
 
     /**

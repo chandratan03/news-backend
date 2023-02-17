@@ -17,5 +17,4 @@
     - email: admin@email.com
     - password: admin123
 7. Retrieve the token (bearer token) in the session storage
-8. run this command in order to sync the data (**REPLACE YOUR TOKEN in `{TOKEN}` includes the curlybracket must be removed**)
-    - `curl --location --request GET 'localhost:8080/api/v1/news/sync' --header 'Accept: application/json' --header 'Authorization: Bearer {TOKEN}'`
+8. `localhost:8080/api/v1/news/sync` hit this API in order to sync the data from other sources, and make sure to use the token from the logged admin account (you can retrieve it from session storage).

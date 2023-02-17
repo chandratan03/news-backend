@@ -6,6 +6,7 @@ use App\Constants\HttpResponse;
 use App\Helper\MyHelper;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\UpdatePersonalize;
 use App\Http\Requests\Auth\UpdateRequest;
 use App\Services\IUserService;
 
@@ -73,4 +74,15 @@ class AuthController extends Controller
         $result = $this->userService->update($data);
         return MyHelper::customResponse($result);
     }
+
+    public function updatePersonalize(UpdatePersonalize $request)
+    {
+        $data["sources"] = $request["sources"];
+        $data["categories"] = $request["categories"];
+        $data["authors"] = $request["authors"];
+
+        $result = $this->userService->updatePersonalize($data);
+        return MyHelper::customResponse($result);
+    }
+
 }

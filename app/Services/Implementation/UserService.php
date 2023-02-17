@@ -53,19 +53,30 @@ class UserService implements IUserService
         $payload = [];
         $user = auth()->user();
         foreach ($data as $key => $value) {
-
+            if ($key === "personalize") continue;
             if ($key === "image" && !empty($value)) {
                 $prefixImage = "images";
                 $imageName = Str::uuid()->toString() . "." .  $value->getClientOriginalExtension();
                 $value->storeAs("public/" . $prefixImage, $imageName);
                 $payload["image_url"] = url("/") . "/" . "storage/" . $prefixImage . "/" . $imageName;
-
             } else if ($value !== null) {
                 $payload[$key] = $value;
             }
         }
         $result = $this->userRepository->update($user->id, $payload);
         if ($result) {
+            return $this->userRepository->findById($user->id);
+        }
+        return "failed";
+    }
+
+    public function updatePersonalize($data)
+    {
+        $user = auth()->user();
+        $payload = [];
+        $payload["personalize"] = json_encode($data);
+        $result = $this->userRepository->update($user->id, $payload);
+        if($result){
             return $this->userRepository->findById($user->id);
         }
         return "failed";

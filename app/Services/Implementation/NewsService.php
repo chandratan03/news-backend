@@ -296,8 +296,8 @@ class NewsService implements INewsService
     {
         $params = $this->searchParams($data);
         $params = $this->filterByAuthor($params, $data["author"]);
+        $result = $this->newsRepository->paginationWithWhere($params, $pageSize);
 
-        $result = $this->newsRepository->paginationWithWhere($params, $data["author"], $pageSize);
         foreach ($result as $news) {
             foreach ($news->newsContributors as $newsContributor) {
                 $newsContributor->contributor;
@@ -308,6 +308,48 @@ class NewsService implements INewsService
 
         return $result;
     }
+
+    public function paginateByPersonalize($pageSize, $data)
+    {
+        $user = auth()->user();
+        $result = null;
+
+        if (!$user["personalize"]) return [];
+        $personalize = json_decode($user["personalize"], true);
+
+        if (empty($personalize["authors"]) && empty($personalize["sources"]) && empty($personalize["categories"])) {
+            return [];
+        }
+        $wheres = $this->extractPersonalizeToWheresConditions($personalize);
+        $result = $this->newsRepository->paginationWithWhere($wheres, $pageSize);
+
+        foreach ($result as $news) {
+            foreach ($news->newsContributors as $newsContributor) {
+                $newsContributor->contributor;
+            }
+            $news->source;
+            $news->newsCategory;
+        }
+
+        return $result;
+    }
+
+    private function extractPersonalizeToWheresConditions($personalize)
+    {
+        $wheres = [];
+        if (!empty($personalize["authors"])) {
+            $wheres = $this->filterByAuthor($wheres, $personalize["authors"]);
+        }
+
+        if (!empty($personalize["sources"])) {
+            $wheres[] = ["news_source_id", $personalize["sources"]];
+        }
+        if (!empty($personalize["categories"])) {
+            $wheres[] = ["news_category_id", $personalize["categories"]];
+        }
+        return $wheres;
+    }
+
 
     private function filterByAuthor($params, $author)
     {

@@ -23,16 +23,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'v1'], function () {
-        Route::get('/user', function (Request $request) {
-            return $request->user();
+
+        Route::group(['prefix' => "auth"], function () {
+            Route::post('/personalize', [AuthController::class, "updatePersonalize"]);
+            Route::post('/logout', [AuthController::class, 'logout']);
+            Route::post('/update', [AuthController::class, 'update']);
         });
-        Route::post('auth/logout', [AuthController::class, 'logout']);
-        Route::post('auth/update', [AuthController::class, 'update']);
+
         Route::middleware([EnsureIsAdmin::class])->group(function () {
             Route::group(["prefix" => "/news"], function () {
                 Route::get('/sync', [NewsSyncController::class, 'sync']);
             });
         });
+        Route::get("/news/personalize", [NewsController::class, "personalize"]);
     });
 });
 
@@ -49,6 +52,7 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(["prefix" => "/contributor"], function () {
+        Route::get('/', [ContributorController::class, 'index']);
         Route::get("/random", [ContributorController::class, "getRandomAuthor"]);
         Route::get("/{id}", [ContributorController::class, "findById"]);
     });

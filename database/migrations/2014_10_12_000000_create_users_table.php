@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text("image_url")->nullable();
             $table->string('email')->unique();
             $table->boolean("is_admin")->default(false);
+            $table->json("personalize")->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

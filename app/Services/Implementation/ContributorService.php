@@ -15,7 +15,13 @@ class ContributorService implements IContributorService
         $this->contributorRepository = $contributorRepository;
     }
 
-    public function findById($id){
+    public function all()
+    {
+        return $this->contributorRepository->all();
+    }
+
+    public function findById($id)
+    {
         return $this->contributorRepository->findById($id);
     }
 

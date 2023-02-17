@@ -15,6 +15,11 @@ class ContributorController extends Controller
         $this->contributorService = $contributorService;
     }
 
+    public function index()
+    {
+        return MyHelper::customResponse($this->contributorService->all());
+    }
+
     public function findById($id)
     {
         return MyHelper::customResponse($this->contributorService->findById($id));

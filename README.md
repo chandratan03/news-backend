@@ -17,4 +17,4 @@
     - email: admin@email.com
     - password: admin123
 7. Retrieve the token (bearer token) in the session storage
-8. `localhost:8080/api/v1/news/sync` hit this API in order to sync the data from other sources, and make sure to use the token from the logged admin account (you can retrieve it from session storage).
+8. `localhost:8080/api/v1/news/sync` hit this API in order to sync the data from other sources, and make sure to use the token from the logged admin account (you can retrieve it from session storage). In order to hit the API, you can use POSTMAN, or curl.

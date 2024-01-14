@@ -1,3 +1,5 @@
+The project revolves around retrieving news from APIs, loading it into a database, and serving the data for the frontend.
+
 This backend project serves as the API for this [frontend project] (https://github.com/chandratan03/news-frontend)
 - https://content.guardianapis.com/search
 - https://newsapi.org/v2/top-headlines

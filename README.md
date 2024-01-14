@@ -1,3 +1,8 @@
+This backend project serves as the API for this [frontend project] (https://github.com/chandratan03/news-frontend)
+- https://content.guardianapis.com/search
+- https://newsapi.org/v2/top-headlines
+- https://api.nytimes.com/svc/search/v2/articlesearch.json
+
 
 ### Make Sure you install the docker in your machine. You can check the documentation how to install the docker from official website https://docs.docker.com/
 ### And also make sure the docker is running in your machine.
